@@ -5,11 +5,28 @@
 | Team member | Ownership | Initial setup status |
 | --- | --- | --- |
 | Paul Jiang | Acquire/prepare TCGA-BRCA, barcode/label matching, full/PAM50/random baselines; interpretation/report support | Implemented here, with validation evidence |
-| Kary Zheng | ANOVA and L1 feature selection; subset-size comparison; selection stability and PAM50 overlap | Extension points and data ready; research implementation remains with Kary |
+| Kary Zheng | ANOVA and L1 feature selection; subset-size comparison; selection stability and PAM50 overlap | Selectors, fold-wise rankings, stability/PAM50 analysis and a first evaluation committed (see below); literature review pending |
 | Alan He | Logistic Regression/Random Forest, repeated CV, metrics, visualizations | Baseline reference runner supplied for integration; final evaluation remains with Alan |
 | All | Experimental design, integration, interpretation, final report | Shared decisions required as the project develops |
 
 Names identify code ownership only. The proposal's student IDs, email addresses, and PDF are not needed to reproduce this repository.
+
+## Feature selection handoff (Kary → Alan)
+
+**Use the committed gene rankings; do not rerun `bc-subtype rank`.** `docs/validation/selection-rankings.tsv` holds the top 500 ANOVA and L1 genes for each of the 25 shared training splits (gene IDs only, no patient data). The stability analysis, selection frequencies and PAM50 overlap in `docs/validation/` were all computed from this one file, so every evaluation must use it for the gene lists to agree. Rerunning L1 on another platform can change a few selected genes and takes about 40 minutes single-process.
+
+Evaluate the selected panels next to the fixed baselines, on the same splits:
+
+```bash
+bc-subtype baseline --config configs/baselines.json \
+  --rankings docs/validation/selection-rankings.tsv --output-dir results/selected-eval
+```
+
+This adds `anova_<k>` and `l1_<k>` panels for k = 10/25/50/100/500 (override with `"selection_sizes"` in the config). In Python, each split's top-k genes are `rankings.query("method == 'l1' and repeat == r and fold == f and rank <= k")`. `evaluate.selected_panels` maps them to matrix columns and checks that the rankings cover exactly the fold design.
+
+**Platform differences.** Kary's reference run (`docs/validation/selected-*`) was made on macOS; Paul's baselines on Windows, with identical package versions. Logistic Regression results match; Random Forest means differ by at most 0.002 macro-F1 (fold-level up to 0.03), and no `within_0_02_of_full` conclusion changes. Report final numbers from a single machine's run. Treat the macOS run as a cross-check: mean differences much above ~0.003 for the same panel and classifier indicate a real discrepancy worth investigating.
+
+`bc-subtype stability` regenerates the stability tables from the rankings without expression data.
 
 ## Consume Paul's data
 
