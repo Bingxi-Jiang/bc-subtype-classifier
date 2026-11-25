@@ -1,0 +1,37 @@
+{
+  "status": "complete",
+  "config": {
+    "purpose": "Proposal reference baselines: repeated stratified 5-fold CV, 5 repeats; fixed hyperparameters",
+    "n_splits": 5,
+    "n_repeats": 5,
+    "seed": 184,
+    "random_seed": 184,
+    "random_gene_sizes": [
+      10,
+      25,
+      50,
+      100,
+      500
+    ],
+    "classifiers": [
+      "logistic_regression",
+      "random_forest"
+    ],
+    "n_estimators": 200,
+    "threads": 2
+  },
+  "methods": [
+    "anova",
+    "l1"
+  ],
+  "n_rank": 500,
+  "python": "3.14.0",
+  "packages": {
+    "numpy": "2.5.5",
+    "scikit-learn": "1.9.1"
+  },
+  "prepared_provenance_sha256": "665ee66027446bdc872517282de6326907fb4fe543d2c71693270469fb42c8ab",
+  "config_sha256": "fc76715b64a95bbd9f5cb1e13e55cdb1e0f5be4ba0f9672c555cede5728a42bc",
+  "implementation_sha256": "6aee449a47e5dd57c90ad1ed3b0efaade5ed6476f087d8ad296d81172d96ce5f",
+  "rankings": 50
+}

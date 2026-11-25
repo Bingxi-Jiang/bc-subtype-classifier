@@ -8,6 +8,7 @@ from sklearn.metrics import f1_score
 from bc_subtype import download
 from bc_subtype.data import CLASSES, LABELS, load_dataset, panel_reference, prepare
 from bc_subtype.evaluate import evaluate
+from bc_subtype.selection import rank_folds
 
 
 def test_verified_sources_to_aligned_data_and_auditable_held_out_metrics(tmp_path, monkeypatch):
@@ -91,6 +92,18 @@ def test_verified_sources_to_aligned_data_and_auditable_held_out_metrics(tmp_pat
     assert json.loads((output / "run.json").read_text())["status"] == "complete"
     with pytest.raises(FileExistsError):
         evaluate(processed, output, config)
+    # Each class has one gene shifted by +20 (reference rows 0-3); both selectors
+    # must recover exactly those genes as the top 4 in every training fold.
+    selection = tmp_path / "selection"
+    rankings = rank_folds(processed, selection, config, n_rank=4, jobs=1)
+    signal = set(reference["gene_id"].astype(str).iloc[:4])
+    for _, group in rankings.groupby(["repeat", "fold", "method"]):
+        assert set(group["gene_id"].astype(str)) == signal
+        assert group["rank"].tolist() == [1, 2, 3, 4]
+    assert set(rankings["method"]) == {"anova", "l1"} and rankings["in_pam50"].all()
+    assert json.loads((selection / "run.json").read_text())["status"] == "complete"
+    with pytest.raises(FileExistsError):
+        rank_folds(processed, selection, config)
     (processed / "samples.tsv").write_text("corrupt")
     with pytest.raises(ValueError, match="Prepared artifact changed"):
         load_dataset(processed)
