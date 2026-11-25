@@ -1,0 +1,46 @@
+{
+  "status": "complete",
+  "config": {
+    "purpose": "Proposal reference baselines: repeated stratified 5-fold CV, 5 repeats; fixed hyperparameters",
+    "n_splits": 5,
+    "n_repeats": 5,
+    "seed": 184,
+    "random_seed": 184,
+    "random_gene_sizes": [
+      10,
+      25,
+      50,
+      100,
+      500
+    ],
+    "classifiers": [
+      "logistic_regression",
+      "random_forest"
+    ],
+    "n_estimators": 200,
+    "threads": 2
+  },
+  "python": "3.14.0",
+  "packages": {
+    "numpy": "2.5.5",
+    "pandas": "3.1.1",
+    "scipy": "1.18.1",
+    "scikit-learn": "1.9.1",
+    "threadpoolctl": "3.8.0"
+  },
+  "prepared_provenance_sha256": "665ee66027446bdc872517282de6326907fb4fe543d2c71693270469fb42c8ab",
+  "config_sha256": "fc76715b64a95bbd9f5cb1e13e55cdb1e0f5be4ba0f9672c555cede5728a42bc",
+  "rankings": "docs/validation/selection-rankings.tsv",
+  "rankings_sha256": "b3908f436e2647e2fe1ef4108c9ca69c1cc2c9c856a57895c825d9b59110be5d",
+  "implementation_sha256": {
+    "__init__.py": "9338d966bba44f76ad61dfd09227af7b30e583350510732dcffac979a2f7c2fd",
+    "baselines.py": "8e3805a649a587e34f45401adab1fe1405bd3061b1180cce9bfe101e1f9a456c",
+    "cli.py": "303a429647eaa9105f1780c42db7631f37a4d455b040df5f357b5ca9f3c845c5",
+    "data.py": "03e20ec63011bac02220f75d04e387b59e9ef50ce4eb0532a2091dadb7f4b3e7",
+    "download.py": "8f3adf947469dc31d8eabf9ababadd1a5195ddeac91a6ae7988a29cfb7896c5d",
+    "evaluate.py": "5ca5c051aa2e6ad27b2e90ddf459d7afccffa994fc8e134b718872f7a7b8b2ce",
+    "selection.py": "6aee449a47e5dd57c90ad1ed3b0efaade5ed6476f087d8ad296d81172d96ce5f",
+    "stability.py": "33b57b21f4e525b07fb4df3c27ead95ab6b3810460a9a44b6d4d44fe92dd8ec9"
+  },
+  "fits": 850
+}

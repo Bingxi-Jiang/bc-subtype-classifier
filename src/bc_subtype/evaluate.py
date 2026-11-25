@@ -18,7 +18,36 @@ from bc_subtype.data import CLASSES, load_dataset, make_folds, write_json
 from bc_subtype.download import sha256
 
 
-def evaluate(data_dir, output_dir, config_path):
+def selected_panels(rankings_path, genes, folds, sizes):
+    """Map each split to {"<method>_<k>": column indices} from fold-wise rankings.
+
+    The rankings must come from the same training splits (``bc-subtype rank``),
+    so every panel was chosen without that split's held-out samples.
+    """
+    rankings = pd.read_csv(rankings_path, sep="\t", dtype={"gene_id": str})
+    positions = {gene: index for index, gene in enumerate(genes["gene_id"])}
+    unknown = set(rankings["gene_id"]) - set(positions)
+    if unknown:
+        raise ValueError(f"Ranked genes absent from the prepared data: {sorted(unknown)[:5]}")
+    expected = set(folds[["repeat", "fold"]].itertuples(index=False, name=None))
+    panels = {}
+    for (method, repeat, fold), group in rankings.groupby(["method", "repeat", "fold"]):
+        ordered = group.sort_values("rank")
+        if ordered["rank"].tolist() != list(range(1, len(ordered) + 1)) or len(ordered) < max(
+            sizes
+        ):
+            raise ValueError(f"{method} split {repeat}/{fold}: ranks are not 1..{max(sizes)}+")
+        columns = np.array([positions[gene] for gene in ordered["gene_id"]])
+        for size in sizes:
+            panels.setdefault((repeat, fold), {})[f"{method}_{size}"] = columns[:size]
+    for method in rankings["method"].unique():
+        covered = {key for key, value in panels.items() if f"{method}_{sizes[0]}" in value}
+        if covered != expected:
+            raise ValueError(f"{method} rankings do not cover exactly this fold design")
+    return panels
+
+
+def evaluate(data_dir, output_dir, config_path, rankings_path=None):
     config = json.loads(Path(config_path).read_text())
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -29,6 +58,10 @@ def evaluate(data_dir, output_dir, config_path):
     folds = make_folds(samples, config["n_splits"], config["n_repeats"], config["seed"])
     folds.to_csv(output_dir / "folds.tsv", sep="\t", index=False)
     panels = gene_panels(genes, tuple(config["random_gene_sizes"]), config["random_seed"])
+    selected = {}
+    if rankings_path is not None:
+        sizes = tuple(config.get("selection_sizes", config["random_gene_sizes"]))
+        selected = selected_panels(rankings_path, genes, folds, sizes)
     write_json(
         output_dir / "panels.json",
         {name: genes.iloc[indices]["gene_id"].tolist() for name, indices in panels.items()},
@@ -51,6 +84,8 @@ def evaluate(data_dir, output_dir, config_path):
             },
             "prepared_provenance_sha256": sha256(Path(data_dir) / "provenance.json"),
             "config_sha256": sha256(config_path),
+            "rankings": None if rankings_path is None else str(rankings_path),
+            "rankings_sha256": None if rankings_path is None else sha256(rankings_path),
             "implementation_sha256": {
                 path.name: sha256(path) for path in sorted(Path(__file__).parent.glob("*.py"))
             },
@@ -62,7 +97,8 @@ def evaluate(data_dir, output_dir, config_path):
         test = group["row_index"].to_numpy()
         train = np.setdiff1d(np.arange(len(samples)), test)
         assert set(samples.iloc[train]["patient_id"]).isdisjoint(samples.iloc[test]["patient_id"])
-        for panel, columns in panels.items():
+        split_panels = {**panels, **selected.get((repeat, fold), {})}
+        for panel, columns in split_panels.items():
             for classifier in config["classifiers"]:
                 start = time.perf_counter()
                 model = make_pipeline(classifier, config["seed"], config["n_estimators"])

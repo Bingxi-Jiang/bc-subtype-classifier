@@ -20,6 +20,7 @@ def main():
     run.add_argument("--data-dir", default="data/processed")
     run.add_argument("--config", default="configs/baselines.json")
     run.add_argument("--output-dir", default="results/baselines")
+    run.add_argument("--rankings", help="Also evaluate fold-wise ANOVA/L1 top-k gene panels")
     rank = commands.add_parser("rank", help="Rank genes (ANOVA, L1) on every training fold")
     rank.add_argument("--data-dir", default="data/processed")
     rank.add_argument("--config", default="configs/baselines.json")
@@ -44,7 +45,8 @@ def main():
     elif args.command == "stability":
         print(analyze(args.rankings, args.output_dir, args.qc).to_string(index=False))
     else:
-        print(evaluate(args.data_dir, args.output_dir, args.config).to_string(index=False))
+        summary = evaluate(args.data_dir, args.output_dir, args.config, args.rankings)
+        print(summary.to_string(index=False))
 
 
 if __name__ == "__main__":

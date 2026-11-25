@@ -104,6 +104,26 @@ def test_verified_sources_to_aligned_data_and_auditable_held_out_metrics(tmp_pat
     assert json.loads((selection / "run.json").read_text())["status"] == "complete"
     with pytest.raises(FileExistsError):
         rank_folds(processed, selection, config)
+    # Selected top-k panels are evaluated per split alongside the fixed baselines.
+    selected_config = tmp_path / "selected.json"
+    selected_config.write_text(
+        json.dumps({**json.loads(config.read_text()), "selection_sizes": [2, 4]})
+    )
+    selected_run = tmp_path / "selected-run"
+    summary = evaluate(
+        processed, selected_run, selected_config, selection / "rankings.tsv"
+    ).set_index(["panel", "classifier"])
+    for panel in ["anova_2", "anova_4", "l1_2", "l1_4"]:
+        assert summary.loc[(panel, "logistic_regression"), "splits"] == 2
+    assert summary.loc[("anova_4", "logistic_regression"), "macro_f1_mean"] == 1.0
+    assert "macro_f1_delta_from_full" in summary
+    scores = pd.read_csv(selected_run / "metrics.tsv", sep="\t")
+    assert (scores.loc[scores["panel"] == "l1_4", "input_genes"] == 4).all()
+    run = json.loads((selected_run / "run.json").read_text())
+    assert run["status"] == "complete" and run["rankings_sha256"]
+    # The base config asks for top-10/25 panels, but only 4 genes were ranked.
+    with pytest.raises(ValueError, match="ranks are not"):
+        evaluate(processed, tmp_path / "too-few", config, selection / "rankings.tsv")
     (processed / "samples.tsv").write_text("corrupt")
     with pytest.raises(ValueError, match="Prepared artifact changed"):
         load_dataset(processed)
