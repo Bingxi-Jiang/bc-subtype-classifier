@@ -5,6 +5,7 @@ from bc_subtype.data import prepare
 from bc_subtype.download import download
 from bc_subtype.evaluate import evaluate
 from bc_subtype.selection import rank_folds
+from bc_subtype.stability import analyze
 
 
 def main():
@@ -26,6 +27,10 @@ def main():
     rank.add_argument("--methods", nargs="+", default=["anova", "l1"])
     rank.add_argument("--n-rank", type=int, default=500)
     rank.add_argument("--jobs", type=int, default=4)
+    stab = commands.add_parser("stability", help="Selection frequency, Jaccard and PAM50 overlap")
+    stab.add_argument("--rankings", default="docs/validation/selection-rankings.tsv")
+    stab.add_argument("--qc", default="docs/validation/qc.json")
+    stab.add_argument("--output-dir", default="results/stability")
     args = parser.parse_args()
     if args.command == "download":
         download(args.raw_dir)
@@ -36,6 +41,8 @@ def main():
             args.data_dir, args.output_dir, args.config, args.methods, args.n_rank, args.jobs
         )
         print(f"Saved {len(rankings)} ranked genes to {args.output_dir}/rankings.tsv")
+    elif args.command == "stability":
+        print(analyze(args.rankings, args.output_dir, args.qc).to_string(index=False))
     else:
         print(evaluate(args.data_dir, args.output_dir, args.config).to_string(index=False))
 

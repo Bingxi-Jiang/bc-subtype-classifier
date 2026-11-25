@@ -1,0 +1,11 @@
+{
+  "rankings": "docs/validation/selection-rankings.tsv",
+  "n_universe": 20505,
+  "sizes": [
+    10,
+    25,
+    50,
+    100,
+    500
+  ]
+}
