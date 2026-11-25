@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bc-subtype-classifier"
+version = "0.1.0"
+description = "Reproducible TCGA-BRCA preprocessing and gene-panel baselines for CS 184A"
+requires-python = ">=3.11"
+dependencies = [
+  "numpy>=2.1,<3", "pandas>=2.2,<4", "scipy>=1.14,<2",
+  "scikit-learn>=1.6,<2", "matplotlib>=3.9,<4", "seaborn>=0.13,<1",
+  "threadpoolctl>=3.5,<4",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10", "ruff>=0.9,<1"]
+
+[project.scripts]
+bc-subtype = "bc_subtype.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+bc_subtype = ["resources/*.json", "resources/*.tsv"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]

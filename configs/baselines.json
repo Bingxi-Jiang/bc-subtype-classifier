@@ -1,0 +1,11 @@
+{
+  "purpose": "Proposal reference baselines: repeated stratified 5-fold CV, 5 repeats; fixed hyperparameters",
+  "n_splits": 5,
+  "n_repeats": 5,
+  "seed": 184,
+  "random_seed": 184,
+  "random_gene_sizes": [10, 25, 50, 100, 500],
+  "classifiers": ["logistic_regression", "random_forest"],
+  "n_estimators": 200,
+  "threads": 2
+}

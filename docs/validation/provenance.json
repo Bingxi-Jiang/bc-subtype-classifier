@@ -1,0 +1,32 @@
+{
+  "source": {
+    "study_id": "brca_tcga_pan_can_atlas_2018",
+    "repository": "cBioPortal/datahub",
+    "revision": "dda832891555904730395d476c5c888b2e1553e1",
+    "expression_profile": "rna_seq_v2_mrna",
+    "expression_units": "RSEM, batch normalized from Illumina HiSeq_RNASeqV2 (not raw counts or z-scores)",
+    "files": {
+      "data_mrna_seq_v2_rsem.txt": {
+        "sha256": "aba030e1f04a196ee6c2118ed37e777b533f7fd24ffd1bcbde908dcee33b2eb5",
+        "bytes": 154654165
+      },
+      "data_clinical_sample.txt": {
+        "sha256": "e96e6e4895a6ddcdb31d508a9e8f5676ca78ce396d2f82cd111a286a17e75ca6",
+        "bytes": 204137
+      },
+      "data_clinical_patient.txt": {
+        "sha256": "13c939025794ce21905ccb3409865fa08506b2283b432f8e3a3022f60a4c7682",
+        "bytes": 341851
+      }
+    }
+  },
+  "outputs": {
+    "expression.npz": "3333ddc9101a2d0def2f817c142f7c827ccc9b8020c1a9d49d4fe2e9b38a987a",
+    "samples.tsv": "ec13cd703a1e340bd62513c4aec03ba5b76239301b80c9d5664467c2d466338f",
+    "genes.tsv": "516b4319cdb53a7f2c079ec96d6065f35d257e645b315f56e2e381f552ebf3a4",
+    "exclusions.tsv": "8db266be86a199e258c191857080231cc3b6034bbd302e191e324cd9d228cca7",
+    "pam50_coverage.tsv": "249c0a7f08cb8e86f5ddff56dfedcc327d97ee24dc8ba99d3e3ccc57235b93ab",
+    "folds.tsv": "bde33b51548f66a56264c4db3b4f71fe8dbea5d15b98d67403dc98a4b9aa4f85",
+    "qc.json": "f078c140a6a876cc6a93eb7cf9255a013bce134e8231af54e71d29f04bbaa499"
+  }
+}

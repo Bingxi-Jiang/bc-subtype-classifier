@@ -1,0 +1,36 @@
+{
+  "study_id": "brca_tcga_pan_can_atlas_2018",
+  "source_revision": "dda832891555904730395d476c5c888b2e1553e1",
+  "clinical_patients": 1084,
+  "clinical_samples": 1084,
+  "expression_samples": 1082,
+  "retained_samples": 945,
+  "unique_patients": 945,
+  "class_counts": {
+    "Luminal A": 499,
+    "Luminal B": 197,
+    "Basal-like": 171,
+    "HER2-enriched": 78
+  },
+  "source_subtype_counts": {
+    "BRCA_LumA": 499,
+    "BRCA_LumB": 197,
+    "BRCA_Basal": 171,
+    "MISSING": 103,
+    "BRCA_Her2": 78,
+    "BRCA_Normal": 36
+  },
+  "exclusions": {
+    "missing_subtype": 101,
+    "normal_like_label": 36
+  },
+  "clinical_samples_without_expression": 2,
+  "pam50_genes_available": 50,
+  "cohort_fingerprint": "6fb6d3077e89edd342aa6fa0fde8aaa3cfef7c85613e9dd444b123e8e3fa2585",
+  "source_gene_rows": 20531,
+  "invalid_entrez_rows_removed": 0,
+  "duplicate_entrez_rows_collapsed": 26,
+  "genes": 20505,
+  "missing_expression_values": 0,
+  "transformation": "log2(batch-normalized RSEM + 1), float32"
+}

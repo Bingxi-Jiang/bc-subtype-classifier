@@ -1,0 +1,21 @@
+{
+  "study_id": "brca_tcga_pan_can_atlas_2018",
+  "repository": "cBioPortal/datahub",
+  "revision": "dda832891555904730395d476c5c888b2e1553e1",
+  "expression_profile": "rna_seq_v2_mrna",
+  "expression_units": "RSEM, batch normalized from Illumina HiSeq_RNASeqV2 (not raw counts or z-scores)",
+  "files": {
+    "data_mrna_seq_v2_rsem.txt": {
+      "sha256": "aba030e1f04a196ee6c2118ed37e777b533f7fd24ffd1bcbde908dcee33b2eb5",
+      "bytes": 154654165
+    },
+    "data_clinical_sample.txt": {
+      "sha256": "e96e6e4895a6ddcdb31d508a9e8f5676ca78ce396d2f82cd111a286a17e75ca6",
+      "bytes": 204137
+    },
+    "data_clinical_patient.txt": {
+      "sha256": "13c939025794ce21905ccb3409865fa08506b2283b432f8e3a3022f60a4c7682",
+      "bytes": 341851
+    }
+  }
+}

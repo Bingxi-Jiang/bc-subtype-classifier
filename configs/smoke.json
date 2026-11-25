@@ -1,0 +1,11 @@
+{
+  "purpose": "Real-data integration smoke check only; not final project evaluation",
+  "n_splits": 2,
+  "n_repeats": 1,
+  "seed": 184,
+  "random_seed": 184,
+  "random_gene_sizes": [10, 25, 50, 100, 500],
+  "classifiers": ["logistic_regression", "random_forest"],
+  "n_estimators": 50,
+  "threads": 2
+}
